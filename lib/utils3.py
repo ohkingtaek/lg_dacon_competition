@@ -47,7 +47,8 @@ def csv_label():
                 label_description[label] = f'{crop[key]}_{disease[key][disease_code]}_{risk[risk_code]}'
 
     label_encoder = {key:idx for idx, key in enumerate(label_description)}
-    return label_encoder
+    label_decoder = {val:key for key, val in label_encoder.items()}
+    return label_encoder, label_decoder
 
 def split_data(
     split_rate: float = 0.2, 
@@ -97,6 +98,16 @@ def csv_to_dict() -> Dict:
     for i in csv_features:
         dic[i] = [df[i][0], df[i][1]]
     return dic
+
+def submission(preds, file_name):
+    _, label_decoder = csv_label()
+    preds = [outputs.detach().cpu().numpy() for batch in preds for outputs in batch]
+    preds = np.array([label_decoder[int(val)] for val in preds])
+    submission = pd.read_csv('data/sample_submission.csv')
+    submission['label'] = preds
+    file_name = 'submission/' + file_name
+    submission.to_csv(file_name, index=False)
+
 
 if __name__ == '__main__':
     csv_make()

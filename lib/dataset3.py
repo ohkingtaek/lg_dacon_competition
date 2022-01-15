@@ -20,7 +20,7 @@ class GrowthDataset(Dataset):
         stage='train',
     ) -> None:
         self.files = files
-        self.label_encoder = csv_label()
+        self.label_encoder, _ = csv_label()
         self.max_len = 24*6
         self.csv_feature_dict = csv_to_dict()
         if files is not None:
