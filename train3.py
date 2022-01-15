@@ -52,11 +52,12 @@ def train(
         test_transform=test_transform
     )
 
+    label_encoder, _ = csv_label()
     model = DiseaseClassifier(
         model_name,
         args.lr,
         num_features=len(csv_to_dict()),
-        num_classes=len(csv_label()),
+        num_classes=len(label_encoder),
         drop_rate=args.drop_rate
     )
 
@@ -82,6 +83,7 @@ def train(
 
 if __name__ == '__main__':
     args = get_args()
+    pl.seed_everything(args.seed)
     train('efficientnet_b0', False, 0, args)
-    # for i in range(5):
+    # for i in range(5):s
     #     train('efficientnet_b0', True, i, args)
